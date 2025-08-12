@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
+#include <stdio.h>
 #include "stm32f0xx.h"
 /* USER CODE END Includes */
 
@@ -47,10 +48,10 @@
 //TODO: Define and initialise the global varibales required
 
 
-  u_int32_t start_time;
-  u_int32_t end_time;
-  u_int32_t execution_time;
-  u_int64_t checksum;
+  uint32_t start_time;
+  uint32_t end_time;
+  uint32_t execution_time;
+  uint64_t checksum;
   uint16_t width[5] = {128, 160, 192, 224, 256};
   uint16_t height[5] = {128, 160, 192, 224, 256};
 
@@ -60,6 +61,7 @@
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
+
 uint64_t calculate_mandelbrot_fixed_point_arithmetic(int width, int height, int max_iterations);
 uint64_t calculate_mandelbrot_double(int width, int height, int max_iterations);
 
@@ -101,28 +103,34 @@ int main(void)
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
   //TODO: Turn on LED 0 to signify the start of the operation
-  
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
 
   //TODO: Record the start time
+  start_time = HAL_GetTick();
   
-  
+
+  int max_iterations=MAX_ITER;
+
   //TODO: Call the Mandelbrot Function and store the output in the checksum variable defined initially
-  
+  checksum=calculate_mandelbrot_fixed_point_arithmetic(224, 224, max_iterations);
 
   //TODO: Record the end time
-  
+  end_time=HAL_GetTick();
 
   //TODO: Calculate the execution time
+  execution_time=end_time-start_time;
   
+
+
 
   //TODO: Turn on LED 1 to signify the end of the operation
-  
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
 
   //TODO: Hold the LEDs on for a 1s delay
-  
+  HAL_Delay(1000);
 
   //TODO: Turn off the LEDs
-  
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);
 
   /* USER CODE END 2 */
 
