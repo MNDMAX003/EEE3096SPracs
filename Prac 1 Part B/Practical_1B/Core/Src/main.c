@@ -28,6 +28,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 #define MAX_ITER 100
+#define SCALE (1 << 16)
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -200,12 +201,36 @@ static void MX_GPIO_Init(void)
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
+//Scale=65536
 /* USER CODE BEGIN 4 */
 //TODO: Mandelbroat using variable type integers and fixed point arithmetic
 uint64_t calculate_mandelbrot_fixed_point_arithmetic(int width, int height, int max_iterations){
   uint64_t mandelbrot_sum = 0;
     //TODO: Complete the function implementation
-    
+  for (int y = 0; y < height-1; y++) {
+	for(int x=0;x<width-1;x++){
+		int xOverWidth=((x*SCALE+width/2)/width); //Scaled Integer Value of X Over Width (Must still be divided by Scale)
+		int x0=(xOverWidth*229376)/SCALE-163840; //Scaled Integer Value of X0 (Must still be divided by scaling factor)
+		int yOverHeight=((y*SCALE+height/2)/height); //Scaled Integer Value of Y Over height (Must still be divided by Scale)
+		int y0=(yOverHeight*131072)/SCALE-65536; //Scaled Integer Value of Y0 (Must still be divided by scaling factor)
+
+		int xi=0;
+		int yi=0;
+		int i=0;
+
+		while(i<MAX_ITER && xi^2+yi^2<=4){
+			int temp=xi^2+yi^2;
+			yi=2*xi*yi+y0;
+			xi=temp+x0;
+
+			i++;
+		}
+
+		mandelbrot_sum=mandelbrot_sum+i;
+
+
+	}
+}
     return mandelbrot_sum;
 
 }
@@ -215,6 +240,7 @@ uint64_t calculate_mandelbrot_double(int width, int height, int max_iterations){
     uint64_t mandelbrot_sum = 0;
     //TODO: Complete the function implementation
     
+
     return mandelbrot_sum;
 }
 
