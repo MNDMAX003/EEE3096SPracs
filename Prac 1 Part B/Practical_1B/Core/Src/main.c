@@ -112,7 +112,7 @@ int main(void)
   int max_iterations=MAX_ITER;
 
   //TODO: Call the Mandelbrot Function and store the output in the checksum variable defined initially
-  checksum=calculate_mandelbrot_fixed_point_arithmetic(224, 224, max_iterations);
+  checksum=calculate_mandelbrot_double(256, 256, max_iterations);
 
   //TODO: Record the end time
   end_time=HAL_GetTick();
@@ -226,6 +226,9 @@ uint64_t calculate_mandelbrot_fixed_point_arithmetic(int width, int height, int 
 		int yi=0;
 		int i=0;
 
+		y0=y0/SCALE;
+		x0=x0/SCALE;
+
 		while(i<MAX_ITER && xi^2+yi^2<=4){
 			int temp=xi^2+yi^2;
 			yi=2*xi*yi+y0;
@@ -247,7 +250,29 @@ uint64_t calculate_mandelbrot_fixed_point_arithmetic(int width, int height, int 
 uint64_t calculate_mandelbrot_double(int width, int height, int max_iterations){
     uint64_t mandelbrot_sum = 0;
     //TODO: Complete the function implementation
-    
+    for (int y = 0; y < height-1; y++) {
+    	for(int x=0;x<width-1;x++){
+
+    		int x0=(x/(float)width)*3.5-2.5; //Scaled Integer Value of X0 (Must still be divided by scaling factor)
+    		int y0=(y/(float)height)*2.0-1.0; //Scaled Integer Value of Y0 (Must still be divided by scaling factor)
+
+    		int xi=0;
+    		int yi=0;
+    		int i=0;
+
+    		while(i<MAX_ITER && xi^2+yi^2<=4){
+    			int temp=xi^2+yi^2;
+    			yi=2*xi*yi+y0;
+    			xi=temp+x0;
+
+    			i++;
+    		}
+
+    		mandelbrot_sum=mandelbrot_sum+i;
+
+
+    	}
+    }
 
     return mandelbrot_sum;
 }
