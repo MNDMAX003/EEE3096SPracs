@@ -44,13 +44,14 @@
 
 /* USER CODE BEGIN PV */
 //TODO: Define and initialise the global varibales required
-/*
-  start_time
-  end_time
-  execution_time 
-  checksum: should be uint64_t
-  initial width and height maybe or you might opt for an array??
-*/
+
+
+  u_int32_t start_time;
+  u_int32_t end_time;
+  u_int32_t execution_time;
+  u_int64_t checksum;
+  uint16_t width[5] = {128, 160, 192, 224, 256};
+  uint16_t height[5] = {128, 160, 192, 224, 256};
 
 /* USER CODE END PV */
 
