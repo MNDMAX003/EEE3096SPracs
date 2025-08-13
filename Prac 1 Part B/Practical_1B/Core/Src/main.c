@@ -112,7 +112,7 @@ int main(void)
   int max_iterations=MAX_ITER;
 
   //TODO: Call the Mandelbrot Function and store the output in the checksum variable defined initially
-  checksum=calculate_mandelbrot_double(256, 256, max_iterations);
+  checksum=calculate_mandelbrot_fixed_point_arithmetic(128, 128, max_iterations);
 
   //TODO: Record the end time
   end_time=HAL_GetTick();
@@ -211,6 +211,8 @@ static void MX_GPIO_Init(void)
 
 //Scale=65536
 /* USER CODE BEGIN 4 */
+
+
 //TODO: Mandelbroat using variable type integers and fixed point arithmetic
 uint64_t calculate_mandelbrot_fixed_point_arithmetic(int width, int height, int max_iterations){
   uint64_t mandelbrot_sum = 0;
@@ -226,12 +228,11 @@ uint64_t calculate_mandelbrot_fixed_point_arithmetic(int width, int height, int 
 		int yi=0;
 		int i=0;
 
-		y0=y0/SCALE;
-		x0=x0/SCALE;
 
-		while(i<MAX_ITER && xi^2+yi^2<=4){
-			int temp=xi^2+yi^2;
-			yi=2*xi*yi+y0;
+
+		while(i<MAX_ITER && ((xi*xi)/SCALE+(yi*yi)/SCALE)<=(4*SCALE)){
+			int temp=xi*xi/SCALE-yi*yi/SCALE;
+			yi=(2*xi*yi)/SCALE+y0;
 			xi=temp+x0;
 
 			i++;
@@ -253,15 +254,16 @@ uint64_t calculate_mandelbrot_double(int width, int height, int max_iterations){
     for (int y = 0; y < height-1; y++) {
     	for(int x=0;x<width-1;x++){
 
-    		int x0=(x/(float)width)*3.5-2.5; //Scaled Integer Value of X0 (Must still be divided by scaling factor)
-    		int y0=(y/(float)height)*2.0-1.0; //Scaled Integer Value of Y0 (Must still be divided by scaling factor)
+    		double x0=(x/(float)width)*3.5-2.5; //Scaled Integer Value of X0 (Must still be divided by scaling factor)
+    		double y0=(y/(float)height)*2.0-1.0; //Scaled Integer Value of Y0 (Must still be divided by scaling factor)
 
-    		int xi=0;
-    		int yi=0;
+    		double xi=0;
+    		double yi=0;
     		int i=0;
 
-    		while(i<MAX_ITER && xi^2+yi^2<=4){
-    			int temp=xi^2+yi^2;
+
+    		while(i<MAX_ITER && (xi*xi+yi*yi)<=4){
+    			double temp=xi*xi+yi*yi;
     			yi=2*xi*yi+y0;
     			xi=temp+x0;
 
